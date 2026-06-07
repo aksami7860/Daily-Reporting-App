@@ -1,4 +1,8 @@
-    st.set_page_config(
+import streamlit as st
+import pandas as pd
+from datetime import date
+
+st.set_page_config(
     page_title="Meezan Bank - Branch Daily Performance Report", 
     layout="wide",
     page_icon="meezan_logo.png"
@@ -11,23 +15,16 @@ MEEZAN_GOLD = "#C9A227"
 # Custom CSS for Meezan theme
 st.markdown(f"""
 <style>
-    /* Main background */
     .stApp {{
         background-color: #F8F9FA;
     }}
-    
-    /* Header bar */
     [data-testid="stHeader"] {{
         background-color: {MEEZAN_GREEN};
     }}
-    
-    /* Title styling */
     h1, h2, h3 {{
         color: {MEEZAN_GREEN};
         font-weight: 600;
     }}
-    
-    /* Buttons */
     .stButton>button {{
         background-color: {MEEZAN_GREEN};
         color: white;
@@ -40,8 +37,6 @@ st.markdown(f"""
         background-color: #00523D;
         color: white;
     }}
-    
-    /* Primary button */
     .stButton>button[kind="primary"] {{
         background-color: {MEEZAN_GOLD};
         color: {MEEZAN_GREEN};
@@ -50,8 +45,6 @@ st.markdown(f"""
         background-color: #B8951F;
         color: {MEEZAN_GREEN};
     }}
-    
-    /* Form container */
     [data-testid="stForm"] {{
         background-color: white;
         padding: 2rem;
@@ -59,17 +52,10 @@ st.markdown(f"""
         border-left: 5px solid {MEEZAN_GREEN};
         box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }}
-    
-    /* Metrics and subheaders */
     .stSubheader {{
         color: {MEEZAN_GREEN};
         border-bottom: 2px solid {MEEZAN_GOLD};
         padding-bottom: 0.3rem;
-    }}
-    
-    /* Dataframe styling */
-    .dataframe {{
-        border: 1px solid #E0E0E0;
     }}
 </style>
 """, unsafe_allow_html=True)
@@ -101,7 +87,6 @@ BRANCH_MAP = {
 
 DATA_FILE = "branch_daily_report.csv"
 
-# --- Input Form ---
 with st.form("report_form"):
     col1, col2 = st.columns(2)
     
@@ -143,7 +128,6 @@ with st.form("report_form"):
     
     submitted = st.form_submit_button("Submit Report", type="primary", use_container_width=True)
 
-# --- Save Data ---
 if submitted:
     new_row = {
         "Date": report_date,
@@ -179,7 +163,6 @@ if submitted:
     st.success(f"Report submitted successfully for {branch_name} on {report_date}!")
     st.balloons()
 
-# --- View Data ---
 st.divider()
 st.subheader("Submitted Reports")
 if st.button("Refresh Data"):
