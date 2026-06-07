@@ -5,7 +5,7 @@ from datetime import date
 st.set_page_config(
     page_title="Meezan Bank - Branch Daily Performance Report", 
     layout="wide",
-    page_icon="meezan_logo.png"
+    "https://www.meezanbank.com/wp-content/uploads/2020/06/logo.png", width=120
 )
 
 # Meezan Bank Brand Colors
