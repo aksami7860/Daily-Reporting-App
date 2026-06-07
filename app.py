@@ -1,7 +1,3 @@
-import streamlit as st
-import pandas as pd
-from datetime import date
-
 st.set_page_config(
     page_title="Meezan Bank - Branch Daily Performance Report", 
     layout="wide",
@@ -63,7 +59,7 @@ st.markdown(f"""
 # Header with logo
 col1, col2 = st.columns([1, 5])
 with col1:
-    st.image("meezan_logo.png", width=120)
+    st.image("https://www.meezanbank.com/wp-content/uploads/2020/06/logo.png", width=120)
 with col2:
     st.title("Branch Daily Performance Report")
     st.caption("Meezan Bank Limited")
