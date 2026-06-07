@@ -1,4 +1,7 @@
 import streamlit as st
+import pandas as pd
+from datetime import date
+
 st.set_page_config(
     page_title="Meezan Bank - Branch Daily Performance Report", 
     layout="wide",
@@ -32,14 +35,9 @@ st.markdown(f"""
     }}
     .stButton>button:hover {{
         background-color: #00523D;
-        color: white;
     }}
     .stButton>button[kind="primary"] {{
         background-color: {MEEZAN_GOLD};
-        color: {MEEZAN_GREEN};
-    }}
-    .stButton>button[kind="primary"]:hover {{
-        background-color: #B8951F;
         color: {MEEZAN_GREEN};
     }}
     [data-testid="stForm"] {{
