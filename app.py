@@ -1,8 +1,86 @@
-import streamlit as st
-import pandas as pd
-from datetime import date
+    st.set_page_config(
+    page_title="Meezan Bank - Branch Daily Performance Report", 
+    layout="wide",
+    page_icon="meezan_logo.png"
+)
 
-st.set_page_config(page_title="Branch Daily Performance Report", layout="wide")
+# Meezan Bank Brand Colors
+MEEZAN_GREEN = "#006A4E"
+MEEZAN_GOLD = "#C9A227"
+
+# Custom CSS for Meezan theme
+st.markdown(f"""
+<style>
+    /* Main background */
+    .stApp {{
+        background-color: #F8F9FA;
+    }}
+    
+    /* Header bar */
+    [data-testid="stHeader"] {{
+        background-color: {MEEZAN_GREEN};
+    }}
+    
+    /* Title styling */
+    h1, h2, h3 {{
+        color: {MEEZAN_GREEN};
+        font-weight: 600;
+    }}
+    
+    /* Buttons */
+    .stButton>button {{
+        background-color: {MEEZAN_GREEN};
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+        font-weight: 600;
+    }}
+    .stButton>button:hover {{
+        background-color: #00523D;
+        color: white;
+    }}
+    
+    /* Primary button */
+    .stButton>button[kind="primary"] {{
+        background-color: {MEEZAN_GOLD};
+        color: {MEEZAN_GREEN};
+    }}
+    .stButton>button[kind="primary"]:hover {{
+        background-color: #B8951F;
+        color: {MEEZAN_GREEN};
+    }}
+    
+    /* Form container */
+    [data-testid="stForm"] {{
+        background-color: white;
+        padding: 2rem;
+        border-radius: 12px;
+        border-left: 5px solid {MEEZAN_GREEN};
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }}
+    
+    /* Metrics and subheaders */
+    .stSubheader {{
+        color: {MEEZAN_GREEN};
+        border-bottom: 2px solid {MEEZAN_GOLD};
+        padding-bottom: 0.3rem;
+    }}
+    
+    /* Dataframe styling */
+    .dataframe {{
+        border: 1px solid #E0E0E0;
+    }}
+</style>
+""", unsafe_allow_html=True)
+
+# Header with logo
+col1, col2 = st.columns([1, 5])
+with col1:
+    st.image("meezan_logo.png", width=120)
+with col2:
+    st.title("Branch Daily Performance Report")
+    st.caption("Meezan Bank Limited")
 
 BRANCH_MAP = {
     "0218": "Walton Branch",
@@ -23,9 +101,7 @@ BRANCH_MAP = {
 
 DATA_FILE = "branch_daily_report.csv"
 
-st.title("Daily Branch Performance Report")
-st.caption("Submit branch metrics for the day. Data is saved to branch_daily_report.csv")
-
+# --- Input Form ---
 with st.form("report_form"):
     col1, col2 = st.columns(2)
     
@@ -65,8 +141,9 @@ with st.form("report_form"):
         qr_bdo = st.number_input("QR Issued by BDOs", min_value=0, step=1)
         qr_bde = st.number_input("QR Issued by BDEs", min_value=0, step=1)
     
-    submitted = st.form_submit_button("Submit Report", use_container_width=True)
+    submitted = st.form_submit_button("Submit Report", type="primary", use_container_width=True)
 
+# --- Save Data ---
 if submitted:
     new_row = {
         "Date": report_date,
@@ -91,3 +168,34 @@ if submitted:
         "QR_BDO": qr_bdo,
         "QR_BDE": qr_bde
     }
+    
+    try:
+        df = pd.read_csv(DATA_FILE)
+        df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
+    except FileNotFoundError:
+        df = pd.DataFrame([new_row])
+    
+    df.to_csv(DATA_FILE, index=False)
+    st.success(f"Report submitted successfully for {branch_name} on {report_date}!")
+    st.balloons()
+
+# --- View Data ---
+st.divider()
+st.subheader("Submitted Reports")
+if st.button("Refresh Data"):
+    st.rerun()
+
+try:
+    df = pd.read_csv(DATA_FILE)
+    st.dataframe(df.sort_values("Date", ascending=False), use_container_width=True)
+    
+    csv = df.to_csv(index=False).encode("utf-8")
+    st.download_button(
+        "Download CSV",
+        csv,
+        f"branch_report_{date.today()}.csv",
+        "text/csv",
+        type="primary"
+    )
+except FileNotFoundError:
+    st.info("No reports submitted yet.")
