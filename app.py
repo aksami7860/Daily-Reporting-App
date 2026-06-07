@@ -1,5 +1,9 @@
+import streamlit as st
+import pandas as pd
+from datetime import date
+
 st.set_page_config(page_title="Branch Daily Performance Report", layout="wide")
-# Branch mapping
+
 BRANCH_MAP = {
     "0218": "Walton Branch",
     "0220": "Zarrar Shaheed Branch",
@@ -19,10 +23,9 @@ BRANCH_MAP = {
 
 DATA_FILE = "branch_daily_report.csv"
 
-st.title("📊 Daily Branch Performance Report")
+st.title("Daily Branch Performance Report")
 st.caption("Submit branch metrics for the day. Data is saved to branch_daily_report.csv")
 
-# --- Input Form ---
 with st.form("report_form"):
     col1, col2 = st.columns(2)
     
@@ -64,7 +67,6 @@ with st.form("report_form"):
     
     submitted = st.form_submit_button("Submit Report", use_container_width=True)
 
-# --- Save Data ---
 if submitted:
     new_row = {
         "Date": report_date,
@@ -88,4 +90,4 @@ if submitted:
         "QR_PB": qr_pb,
         "QR_BDO": qr_bdo,
         "QR_BDE": qr_bde
-    }  
+    }
